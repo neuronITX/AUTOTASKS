@@ -86,7 +86,7 @@ class consultas_latencia:
             for nameUrl in listaColl:
                 dfname=dfLatencias.groupby('NOMBRE').get_group(nameUrl)
                 dfname.reset_index(inplace=True, drop=True)
-                dfname['LATENCIA(M)'] = dfname['LATENCIA(M)'].astype(float)
+                dfname.loc[:, 'LATENCIA(M)'] = dfname['LATENCIA(M)'].astype(float)
 
                 pingFalse = dfname['PING'].value_counts().get('False', 0)
                 pingNone = dfname['PING'].value_counts().get('None', 0)
