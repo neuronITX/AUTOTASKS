@@ -70,7 +70,7 @@ class consultas_latencia:
             escritor_csv.writerows(datos)
 
         #ESTADO
-        if fraccion < 5:
+        if fraccion < 3:
             pass
         else:
             filas = []
@@ -101,8 +101,9 @@ class consultas_latencia:
                     valorActual = listLatName[-1]
                     listLatName.pop()
                     ult23Valores = listLatName[-23:] #valores de las ult 2 horas
-                    medLatencia = sum(ult23Valores) / len(ult23Valores)
+                    medLatencia = sum(ult23Valores) / len(ult23Valores)                   
                     promVariacion=medLatencia/10
+                    print(medLatencia, promVariacion)
                     variacMax=medLatencia+promVariacion
                     variacMin=medLatencia-promVariacion
 
