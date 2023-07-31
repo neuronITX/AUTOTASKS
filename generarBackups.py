@@ -5,6 +5,7 @@ import mongodb_backups.cls_mongodb_error as error_e
 import mongodb_backups.cls_mongodb_historial as historial_e 
 
 import pandas as pd
+import csv
 from cryptography.fernet import Fernet
 from decouple import config
 import logging
@@ -143,7 +144,6 @@ def addDevicesSolar(dicDatosMongoDB):
 
 #Actualizacion de backups
 def updateBackups(dicDatosMongoDB):
-    db_a= instancia_cnn_dateTime()
     marca=dicDatosMongoDB.get("MARCA")
     ip=dicDatosMongoDB.get("IP")
 
@@ -169,72 +169,69 @@ def updateBackups(dicDatosMongoDB):
                 else:
                     pass
         else:
-            coll_a= db_a['Antiguos']
-            coll_a.insert_one({
-            "NOMBRE": documento.get("NOMBRE"),
-            "IP": documento.get("IP"),
-            "REGION": documento.get("REGION"), 
-            "PAIS": documento.get("PAIS"), 
-            "MARCA": documento.get("MARCA"), 
-            "CLIENTE": documento.get("CLIENTE"), 
-            "FECHA": date,
-            "ERROR": mss})
+            datos = [
+            [documento.get("NOMBRE"),documento.get("IP"),documento.get("REGION"),
+             documento.get("PAIS"),documento.get("MARCA"),documento.get("CLIENTE"),
+             date,mss]]
+
+            with open('sinActualizar.txt', 'a', newline='') as archivo:
+                escritor_csv = csv.writer(archivo)
+                escritor_csv.writerows(datos)
         return msjOutput
 
 def errorUpdateBackups():
-    dia_now, mes_now, anio_now, date_ac=fecha_actual()
-    db= instancia_cnn_dateTime()
-    coll=db["Antiguos"]
+    date_ac = now.strftime("%d-%m-%Y")
+    try:               
+        filas = []
+        with open('sinActualizar.txt', 'r') as archivo:
+            for linea in archivo:
+                fila = linea.strip().split(',')
+                filas.append(fila)
+        
+        if not filas:
+            msjOutput="-----Archivo vacio-----"
+        else:
+            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','IP', 'REGION', 'PAIS','MARCA','CLIENTE','FECHA','ERROR'])
+            """Excel"""
+            writer = pd.ExcelWriter(f"no_actualizados.xlsx")
+            dfLatencias.to_excel(writer, sheet_name="devices", index=False)
+            writer.save() 
 
-    num=coll.count_documents({})
-    if num==0:
-        df_coll= pd.DataFrame()
-        writer = pd.ExcelWriter(f"no_actualizados.xlsx")
-        df_coll.to_excel(writer, sheet_name="devices", index=False)
-        writer.save() 
-        pass
-    else:
-        all_device= list(coll.find())
-        df_coll= pd.DataFrame(all_device)
-        df_coll=df_coll.drop(['_id'], axis=1)
-        df_coll=df_coll.fillna('Ninguno')
+            """Correo"""
+            subject = f"Dispositivos no actualizados {date_ac}"
+            body = f"Archivo con los equipos que no se actualizaron el día {date_ac}"
+            sender_email = config('sender_email')
+            receiver_email = config('receiver_email')
+            password =config('email_password')
 
-        """Excel"""
-        writer = pd.ExcelWriter(f"no_actualizados.xlsx")
-        df_coll.to_excel(writer, sheet_name="devices", index=False)
-        writer.save() 
+            message = MIMEMultipart()
+            message["From"] = sender_email
+            message["To"] = receiver_email
+            message["Subject"] = subject
+            message["Bcc"] = receiver_email  
+            message.attach(MIMEText(body, "plain"))
+            filename = r"no_actualizados.xlsx"
+            with open(filename, "rb") as attachment:
+                part = MIMEBase("application", "octet-stream")
+                part.set_payload(attachment.read())
 
-        """Correo"""
-        subject = f"Dispositivos no actualizados {date_ac}"
-        body = f"Archivo con los equipos que no se actualizaron el día {date_ac}"
-        sender_email = config('sender_email')
-        receiver_email = config('receiver_email')
-        password =config('email_password')
+            encoders.encode_base64(part)
+            part.add_header(
+                "Content-Disposition",
+                f"attachment; filename= {filename}",
+            )
+            message.attach(part)
+            text = message.as_string()
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_email, text)
 
-        message = MIMEMultipart()
-        message["From"] = sender_email
-        message["To"] = receiver_email
-        message["Subject"] = subject
-        message["Bcc"] = receiver_email  
-        message.attach(MIMEText(body, "plain"))
-        filename = r"no_actualizados.xlsx"
-        with open(filename, "rb") as attachment:
-            part = MIMEBase("application", "octet-stream")
-            part.set_payload(attachment.read())
-
-        encoders.encode_base64(part)
-        part.add_header(
-            "Content-Disposition",
-            f"attachment; filename= {filename}",
-        )
-        message.attach(part)
-        text = message.as_string()
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-            server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, text)
-
-        msjOutput="-----Correo enviado-----"
+            msjOutput="-----Correo enviado-----"
+    except FileNotFoundError:
+            msjOutput="-----Archivo no existe-----"#archivo no existe
+    except IOError:
+        msjOutput="-----Error al leer los datos-----"
     return msjOutput
 
 #Actualizacion y limpieza de los datos
@@ -412,14 +409,12 @@ def backupsUpdate():
     logger.info(f"-----Actualizando backups-----")
     global msjOutput
     dia_now, mes_now, anio_now, date_ac=fecha_actual()
-    db_a= instancia_cnn_dateTime()
-    
-    date = now.strftime("%d-%m-%Y")
-    logger.info(f"-----FECHA {date}-----")
+    logger.info(f"-----FECHA {date_ac}-----")
     q=1
     while q<=3:
         logger.info(f"-----CICLO {q}-----")
-        db_a.drop_collection('Antiguos')
+        with open('sinActualizar.txt', 'w') as archivo_txt:
+            archivo_txt.write('')
 
         inst_back=back_e.consultas_backups_equipos(None,None,None)
         db_b = inst_back.instancia_cnn_backups()

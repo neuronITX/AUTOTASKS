@@ -45,6 +45,7 @@ def timerOnLatencias():
                         dfUrls= pd.DataFrame(all_device)
                         url=str(dfUrls.iloc[0,2])       
                         if ping(url) ==False:
+                            logger.info(f'''{dfUrls.iloc[0,2]}- Conexión: Fail''')
                             dicDatosLatencia={"NOMBRE":dfUrls.iloc[0,1],
                                         "URL":dfUrls.iloc[0,2],
                                         "PING":"Fail",
@@ -54,6 +55,7 @@ def timerOnLatencias():
                             instInsertar=latencia.consultas_latencia(dicDatosLatencia)
                             instInsertar.insertarDatosLatenc()
                         elif ping(url) ==None:
+                            logger.info(f'''{dfUrls.iloc[0,2]}- Conexión: Timeout''')
                             dicDatosLatencia={"NOMBRE":dfUrls.iloc[0,1],
                                         "URL":dfUrls.iloc[0,2],
                                         "PING":"Timeout",
@@ -81,6 +83,7 @@ def timerOnLatencias():
                                 tokenEstadisticas = word_tokenize(pscEstadisticas)
                                 latMed=tokenEstadisticas[6]
 
+                                logger.info(f'''{dfUrls.iloc[0,2]}- Conexión: OK - Latencia: {latMed}''')
                                 instInsertar=latencia.consultas_latencia({"NOMBRE":dfUrls.iloc[0,1],"URL":dfUrls.iloc[0,2],"PING":True,
                                         "PPERDIDOS":pakPerdidos,"LATENCIA(M)":latMed,"FRACCION":hora})
                                 instInsertar.insertarDatosLatenc()     
