@@ -22,6 +22,7 @@ file_handler.setLevel(logging.DEBUG)
 logger.addHandler(file_handler)
 
 def timerOnLatencias():
+    logger.info(f"-----Inicio de latencias-----")
     date_ac = now.strftime("%d-%m-%Y")
     with open('datosLatencias.txt', 'w') as archivo_txt:
         archivo_txt.write('')

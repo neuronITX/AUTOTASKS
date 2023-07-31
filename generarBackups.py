@@ -27,13 +27,13 @@ file_handler=logging.FileHandler(filename)
 file_handler.setLevel(logging.DEBUG)
 logger.addHandler(file_handler)
 
-def instancia_cnn_dateTime(self):
+def instancia_cnn_dateTime():
     inst=cnn.conexion()
     session=inst.conexion_mongodb()
     db = session["dateTime"]
     return db  
 
-def instancia_cnn_tnl_equiposTuneles(self):
+def instancia_cnn_tnl_equiposTuneles():
     inst=cnn.conexion()
     session=inst.conexion_mongodb()
     db = session['tnl_equiposTuneles']
@@ -309,7 +309,7 @@ def updataMongodb():
                 coll_t.delete_one({"IP":str(documento.get("IP"))})
 
 #Actualizacion historial y eliminar documentos
-def updateHistoric(self):
+def updateHistoric():
     listMarcas=["Alcatel","Cisco","HUAWEI Technology Co.,Ltd","Juniper Networks, Inc.",
                 "Beijing Raisecom Scientific & Technology Development Co., Ltd.",
                 "Shenzhen Zhongxing Telecom Co.,ltd."]
@@ -361,6 +361,7 @@ def updateHistoric(self):
 
 #PROCESOS PRINCIPALES
 def devicesSolarAdd():
+    logger.info(f"-----Actualizando informacion equipos-----")
     df_final=checkDevicesSolar()
 
     if df_final.empty:
@@ -408,6 +409,7 @@ def devicesSolarAdd():
     updataMongodb()
 
 def backupsUpdate():
+    logger.info(f"-----Actualizando backups-----")
     global msjOutput
     dia_now, mes_now, anio_now, date_ac=fecha_actual()
     db_a= instancia_cnn_dateTime()
