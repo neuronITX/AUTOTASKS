@@ -69,7 +69,7 @@ class consultas_latencia:
             escritor_csv = csv.writer(archivo)
             escritor_csv.writerows(datos)
 
-        #ESTADO
+        #ESTADO: actualiza estado segun el promedio de los 30 ultimos datos (30min)
         if fraccion < 3:
             pass
         else:
@@ -100,22 +100,18 @@ class consultas_latencia:
                     listLatName = [float(numero) for numero in listLatName]
                     valorActual = listLatName[-1]
                     listLatName.pop()
-                    ult23Valores = listLatName[-23:] #valores de las ult 2 horas
+                    ult23Valores = listLatName[-30:]
                     medLatencia = sum(ult23Valores) / len(ult23Valores)                   
                     promVariacion=medLatencia/10
-                    print(medLatencia, promVariacion)
                     variacMax=medLatencia+promVariacion
                     variacMin=medLatencia-promVariacion
 
                     if variacMin < valorActual < variacMax:
-                        print("Estable")
                         self.dicDatosLatencia.setdefault("ESTADO","Estable")
                         self.updateLtcUrls()
                     elif valorActual>variacMax:
-                        print("Incremento")
                         self.dicDatosLatencia.setdefault("ESTADO","Incremento")
                         self.updateLtcUrls()
                     elif valorActual<variacMin:
-                        print("Decremento")
                         self.dicDatosLatencia.setdefault("ESTADO","Decremento")
                         self.updateLtcUrls()     

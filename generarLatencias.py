@@ -40,7 +40,7 @@ def timerOnLatencias():
                 if num==0:
                     pass
                 else:
-                    #try:
+                    try:
                         all_device= list(coll.find())
                         dfUrls= pd.DataFrame(all_device)
                         url=str(dfUrls.iloc[0,2])       
@@ -65,7 +65,7 @@ def timerOnLatencias():
                             instInsertar=latencia.consultas_latencia(dicDatosLatencia)
                             instInsertar.insertarDatosLatenc()
                         else:
-                            #try:
+                            try:
                                 response = subprocess.run(["ping","-c","10","-q",url],
                                                     capture_output=True,
                                                     text=True)
@@ -87,10 +87,10 @@ def timerOnLatencias():
                                 instInsertar=latencia.consultas_latencia({"NOMBRE":dfUrls.iloc[0,1],"URL":dfUrls.iloc[0,2],"PING":True,
                                         "PPERDIDOS":pakPerdidos,"LATENCIA(M)":latMed,"FRACCION":hora})
                                 instInsertar.insertarDatosLatenc()     
-                            #except Exception as error:
-                                #logger.info(f"-----ERROR LATENCIAS {error}-----")
-                    #except Exception as error:
-                        #logger.info(f"-----ERROR LATENCIAS {error}-----") 
+                            except Exception as error:
+                                logger.info(f"-----ERROR LATENCIAS {error}-----")
+                    except Exception as error:
+                        logger.info(f"-----ERROR LATENCIAS {error}-----") 
     instLat.insertarHistLat()                
 
 timerOnLatencias()
