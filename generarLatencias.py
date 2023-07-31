@@ -90,8 +90,7 @@ def timerOnLatencias():
                             #except Exception as error:
                                 #logger.info(f"-----ERROR LATENCIAS {error}-----")
                     #except Exception as error:
-                        #logger.info(f"-----ERROR LATENCIAS {error}-----")
-            time.sleep(300)#5min 
+                        #logger.info(f"-----ERROR LATENCIAS {error}-----") 
     instLat.insertarHistLat()                
 
 timerOnLatencias()

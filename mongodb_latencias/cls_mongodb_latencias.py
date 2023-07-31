@@ -86,7 +86,6 @@ class consultas_latencia:
             for nameUrl in listaColl:
                 dfname=dfLatencias.groupby('NOMBRE').get_group(nameUrl)
                 dfname.reset_index(inplace=True, drop=True)
-                dfname.loc[:, 'LATENCIA(M)'] = dfname['LATENCIA(M)'].astype(float)
 
                 pingFalse = dfname['PING'].value_counts().get('False', 0)
                 pingNone = dfname['PING'].value_counts().get('None', 0)
@@ -98,6 +97,7 @@ class consultas_latencia:
                     self.updateLtcUrls() 
                 else:           
                     listLatName=list(dfname['LATENCIA(M)'])
+                    listLatName = [float(numero) for numero in listLatName]
                     valorActual = listLatName[-1]
                     listLatName.pop()
                     ult23Valores = listLatName[-23:] #valores de las ult 2 horas
@@ -108,11 +108,14 @@ class consultas_latencia:
                     variacMin=medLatencia-promVariacion
 
                     if variacMin < valorActual < variacMax:
+                        print("Estable")
                         self.dicDatosLatencia.setdefault("ESTADO","Estable")
                         self.updateLtcUrls()
                     elif valorActual>variacMax:
+                        print("Incremento")
                         self.dicDatosLatencia.setdefault("ESTADO","Incremento")
                         self.updateLtcUrls()
                     elif valorActual<variacMin:
+                        print("Decremento")
                         self.dicDatosLatencia.setdefault("ESTADO","Decremento")
                         self.updateLtcUrls()     
