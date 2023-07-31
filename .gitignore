@@ -1,3 +1,4 @@
 .env
 __pycache__/
-
+datosLatencias.txt
+sinActualizar.txt
