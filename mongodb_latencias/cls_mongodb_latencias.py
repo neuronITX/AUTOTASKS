@@ -31,7 +31,7 @@ class consultas_latencia:
         now=datetime.now()
         dateHist = now.strftime("%d-%m-%Y") #SIN HORA
         filas = []
-        with open('datosLatencias.txt', 'r') as archivo:
+        with open('/home/AUTOTASKS/datosLatencias.txt', 'r') as archivo:
             for linea in archivo:
                 fila = linea.strip().split(',')
                 filas.append(fila)
@@ -65,7 +65,7 @@ class consultas_latencia:
                 self.dicDatosLatencia.get("PING"),
                 pperdidos,latenciaMed,fraccion,date,hora]]
 
-        with open('datosLatencias.txt', 'a', newline='') as archivo:
+        with open('/home/AUTOTASKS/datosLatencias.txt', 'a', newline='') as archivo:
             escritor_csv = csv.writer(archivo)
             escritor_csv.writerows(datos)
 
@@ -74,7 +74,7 @@ class consultas_latencia:
             pass
         else:
             filas = []
-            with open('datosLatencias.txt', 'r') as archivo:
+            with open('/home/AUTOTASKS/datosLatencias.txt', 'r') as archivo:
                 for linea in archivo:
                     fila = linea.strip().split(',')
                     filas.append(fila)

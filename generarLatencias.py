@@ -11,7 +11,7 @@ from nltk.tokenize import word_tokenize  #Separar el parrafo en tokens.
 
 now = datetime.now()
 mes_anio = now.strftime("%m-%Y")
-filename=f"logs/{mes_anio}-Latencias.log"
+filename=f"/home/AUTOTASKS/logs/{mes_anio}-Latencias.log"
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(threadName)s - %(processName)s - %(levelname)s - %(message)s')
@@ -24,7 +24,7 @@ logger.addHandler(file_handler)
 def timerOnLatencias():
     logger.info(f"-----Inicio de latencias-----")
     date_ac = now.strftime("%d-%m-%Y")
-    with open('datosLatencias.txt', 'w') as archivo_txt:
+    with open('/home/AUTOTASKS/datosLatencias.txt', 'w') as archivo_txt:
         archivo_txt.write('')
     for hora in range(1,289):
         date_now = now.strftime("%d-%m-%Y")

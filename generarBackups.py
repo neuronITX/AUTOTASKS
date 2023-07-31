@@ -28,12 +28,6 @@ file_handler=logging.FileHandler(filename)
 file_handler.setLevel(logging.DEBUG)
 logger.addHandler(file_handler)
 
-def instancia_cnn_dateTime():
-    inst=cnn.conexion()
-    session=inst.conexion_mongodb()
-    db = session["dateTime"]
-    return db  
-
 def instancia_cnn_tnl_equiposTuneles():
     inst=cnn.conexion()
     session=inst.conexion_mongodb()
@@ -174,7 +168,7 @@ def updateBackups(dicDatosMongoDB):
              documento.get("PAIS"),documento.get("MARCA"),documento.get("CLIENTE"),
              date,mss]]
 
-            with open('sinActualizar.txt', 'a', newline='') as archivo:
+            with open('/home/AUTOTASKS/sinActualizar.txt', 'a', newline='') as archivo:
                 escritor_csv = csv.writer(archivo)
                 escritor_csv.writerows(datos)
         return msjOutput
@@ -183,7 +177,7 @@ def errorUpdateBackups():
     date_ac = now.strftime("%d-%m-%Y")
     try:               
         filas = []
-        with open('sinActualizar.txt', 'r') as archivo:
+        with open('/home/AUTOTASKS/sinActualizar.txt', 'r') as archivo:
             for linea in archivo:
                 fila = linea.strip().split(',')
                 filas.append(fila)
@@ -413,7 +407,7 @@ def backupsUpdate():
     q=1
     while q<=3:
         logger.info(f"-----CICLO {q}-----")
-        with open('sinActualizar.txt', 'w') as archivo_txt:
+        with open('/home/AUTOTASKS/sinActualizar.txt', 'w') as archivo_txt:
             archivo_txt.write('')
 
         inst_back=back_e.consultas_backups_equipos(None,None,None)
