@@ -70,45 +70,48 @@ class consultas_latencia:
             escritor_csv.writerows(datos)
 
         #ESTADO
-        filas = []
-        with open('datosLatencias.txt', 'r') as archivo:
-            for linea in archivo:
-                fila = linea.strip().split(',')
-                filas.append(fila)
+        if fraccion < 5:
+            pass
+        else:
+            filas = []
+            with open('datosLatencias.txt', 'r') as archivo:
+                for linea in archivo:
+                    fila = linea.strip().split(',')
+                    filas.append(fila)
 
-        dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','URL', 'PING', 'PPERDIDOS','LATENCIA(M)','FRACCION','FECHA','HORA'])
+            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','URL', 'PING', 'PPERDIDOS','LATENCIA(M)','FRACCION','FECHA','HORA'])
 
-        db=self.instancia_cnn_ltcUrls()
-        listaColl=db.list_collection_names()
-        for nameUrl in listaColl:
-            dfname=dfLatencias.groupby('NOMBRE').get_group(nameUrl)
-            dfname.reset_index(inplace=True, drop=True)
-            dfname['LATENCIA(M)'] = dfname['LATENCIA(M)'].astype(float)
+            db=self.instancia_cnn_ltcUrls()
+            listaColl=db.list_collection_names()
+            for nameUrl in listaColl:
+                dfname=dfLatencias.groupby('NOMBRE').get_group(nameUrl)
+                dfname.reset_index(inplace=True, drop=True)
+                dfname['LATENCIA(M)'] = dfname['LATENCIA(M)'].astype(float)
 
-            pingFalse = dfname['PING'].value_counts().get('False', 0)
-            pingNone = dfname['PING'].value_counts().get('None', 0)
-            pingTrue = dfname['PING'].value_counts().get('True', 0)
+                pingFalse = dfname['PING'].value_counts().get('False', 0)
+                pingNone = dfname['PING'].value_counts().get('None', 0)
+                pingTrue = dfname['PING'].value_counts().get('True', 0)
 
-            countError=pingFalse+pingNone
-            if countError>pingTrue:
-                self.dicDatosLatencia.setdefault("ESTADO","Inestable")
-                self.updateLtcUrls() 
-            else:           
-                listLatName=list(dfname['LATENCIA(M)'])
-                valorActual = listLatName[-1]
-                listLatName.pop()
-                ult23Valores = listLatName[-23:] #valores de las ult 2 horas
-                medLatencia = sum(ult23Valores) / len(ult23Valores)
-                promVariacion=medLatencia/10
-                variacMax=medLatencia+promVariacion
-                variacMin=medLatencia-promVariacion
-
-                if variacMin < valorActual < variacMax:
-                    self.dicDatosLatencia.setdefault("ESTADO","Estable")
-                    self.updateLtcUrls()
-                elif valorActual>variacMax:
-                    self.dicDatosLatencia.setdefault("ESTADO","Incremento")
-                    self.updateLtcUrls()
-                elif valorActual<variacMin:
-                    self.dicDatosLatencia.setdefault("ESTADO","Decremento")
+                countError=pingFalse+pingNone
+                if countError>pingTrue:
+                    self.dicDatosLatencia.setdefault("ESTADO","Inestable")
                     self.updateLtcUrls() 
+                else:           
+                    listLatName=list(dfname['LATENCIA(M)'])
+                    valorActual = listLatName[-1]
+                    listLatName.pop()
+                    ult23Valores = listLatName[-23:] #valores de las ult 2 horas
+                    medLatencia = sum(ult23Valores) / len(ult23Valores)
+                    promVariacion=medLatencia/10
+                    variacMax=medLatencia+promVariacion
+                    variacMin=medLatencia-promVariacion
+
+                    if variacMin < valorActual < variacMax:
+                        self.dicDatosLatencia.setdefault("ESTADO","Estable")
+                        self.updateLtcUrls()
+                    elif valorActual>variacMax:
+                        self.dicDatosLatencia.setdefault("ESTADO","Incremento")
+                        self.updateLtcUrls()
+                    elif valorActual<variacMin:
+                        self.dicDatosLatencia.setdefault("ESTADO","Decremento")
+                        self.updateLtcUrls()     
