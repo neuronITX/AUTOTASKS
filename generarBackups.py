@@ -18,7 +18,7 @@ from email.mime.text import MIMEText
 
 now = datetime.now()
 mes_anio = now.strftime("%m-%Y")
-filename=f"logs/{mes_anio}.log"
+filename=f"/home/AUTOTASKS/logs/{mes_anio}.log"
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(threadName)s - %(processName)s - %(levelname)s - %(message)s')
