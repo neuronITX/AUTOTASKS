@@ -49,6 +49,7 @@ class consultas_latencia:
         
             collHist=dbHist[nameUrl]               
             collHist.insert_one({"FECHA":dateHist,"CONTENIDO":diccionario})
+        return "-----Historial de latencias agregado-----"
 
 #ltcDatosUrls 
     def insertarDatosLatenc(self): 

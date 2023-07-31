@@ -91,6 +91,7 @@ def timerOnLatencias():
                                 logger.info(f"-----ERROR LATENCIAS {error}-----")
                     except Exception as error:
                         logger.info(f"-----ERROR LATENCIAS {error}-----") 
-    instLat.insertarHistLat()                
+    mensaje=instLat.insertarHistLat()  
+    logger.info(f"-----{mensaje}-----")               
 
 timerOnLatencias()
