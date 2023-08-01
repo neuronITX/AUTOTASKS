@@ -163,7 +163,9 @@ def updateBackups(dicDatosMongoDB):
                 else:
                     pass
         else:
-            modMarca = documento.get("MARCA").replace(",", "")
+            marcaDev=str(documento.get("MARCA"))
+            modMarca = marcaDev.replace('"', "")
+            modMarca = modMarca.replace(",", "")
             datos = [
             [documento.get("NOMBRE"),documento.get("IP"),documento.get("REGION"),
              documento.get("PAIS"),modMarca,documento.get("CLIENTE"),
@@ -186,7 +188,7 @@ def errorUpdateBackups():
         if not filas:
             msjOutput="-----Archivo vacio-----"
         else:
-            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','IP', 'REGION', 'PAIS','MARCA','CLIENTE','FECHA','ERROR','OTRA'])
+            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','IP', 'REGION', 'PAIS','MARCA','CLIENTE','FECHA','ERROR'])
             """Excel"""
             writer = pd.ExcelWriter(f"no_actualizados.xlsx")
             dfLatencias.to_excel(writer, sheet_name="devices", index=False)
@@ -404,9 +406,6 @@ def devicesSolarAdd():
     updataMongodb()
 
 def backupsUpdate():
-    msjOutput=errorUpdateBackups()
-    logger.info(msjOutput)
-    """
     logger.info(f"-----Actualizando backups-----")
     global msjOutput
     dia_now, mes_now, anio_now, date_ac=fecha_actual()
@@ -479,7 +478,6 @@ def backupsUpdate():
             pass 
         q +=1   
     updateHistoric() 
-    """  
 
 devicesSolarAdd()
 backupsUpdate()       
