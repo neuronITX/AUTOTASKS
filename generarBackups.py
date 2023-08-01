@@ -222,11 +222,14 @@ def errorUpdateBackups():
                 server.sendmail(sender_email, receiver_email, text)
 
             msjOutput="-----Correo enviado-----"
+        return msjOutput
+    
     except FileNotFoundError:
             msjOutput="-----Archivo no existe-----"#archivo no existe
+            return msjOutput
     except IOError:
         msjOutput="-----Error al leer los datos-----"
-    return msjOutput
+        return msjOutput
 
 #Actualizacion y limpieza de los datos
 def updataMongodb():
@@ -400,6 +403,9 @@ def devicesSolarAdd():
     updataMongodb()
 
 def backupsUpdate():
+    msjOutput=errorUpdateBackups()
+    logger.info(msjOutput)
+    """
     logger.info(f"-----Actualizando backups-----")
     global msjOutput
     dia_now, mes_now, anio_now, date_ac=fecha_actual()
@@ -471,7 +477,8 @@ def backupsUpdate():
         else:
             pass 
         q +=1   
-    updateHistoric()   
+    updateHistoric() 
+    """  
 
 devicesSolarAdd()
 backupsUpdate()       
