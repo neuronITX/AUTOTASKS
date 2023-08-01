@@ -188,7 +188,7 @@ def errorUpdateBackups():
         if not filas:
             msjOutput="-----Archivo vacio-----"
         else:
-            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','IP', 'REGION', 'PAIS','MARCA','CLIENTE','FECHA','ERROR','OTRA'])
+            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','IP', 'REGION', 'PAIS','MARCA','CLIENTE','FECHA','ERROR'])
             """Excel"""
             writer = pd.ExcelWriter(f"no_actualizados.xlsx")
             dfLatencias.to_excel(writer, sheet_name="devices", index=False)
