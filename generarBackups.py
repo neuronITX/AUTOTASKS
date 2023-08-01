@@ -163,9 +163,12 @@ def updateBackups(dicDatosMongoDB):
                 else:
                     pass
         else:
+            marcaDev=documento.get("MARCA")
+            modMarca = marcaDev.replace('"', '')
+            modMarca = modMarca.replace(',', '')
             datos = [
             [documento.get("NOMBRE"),documento.get("IP"),documento.get("REGION"),
-             documento.get("PAIS"),documento.get("MARCA"),documento.get("CLIENTE"),
+             documento.get("PAIS"),modMarca,documento.get("CLIENTE"),
              date,mss]]
 
             with open('/home/AUTOTASKS/sinActualizar.txt', 'a', newline='') as archivo:
