@@ -164,8 +164,8 @@ def updateBackups(dicDatosMongoDB):
                     pass
         else:
             marcaDev=documento.get("MARCA")
-            modMarca = marcaDev.replace('"', '')
-            modMarca = modMarca.replace(',', '')
+            modMarca = marcaDev.replace('"', "")
+            modMarca = modMarca.replace(",", "")
             datos = [
             [documento.get("NOMBRE"),documento.get("IP"),documento.get("REGION"),
              documento.get("PAIS"),modMarca,documento.get("CLIENTE"),
@@ -188,7 +188,7 @@ def errorUpdateBackups():
         if not filas:
             msjOutput="-----Archivo vacio-----"
         else:
-            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','IP', 'REGION', 'PAIS','MARCA','CLIENTE','FECHA','ERROR'])
+            dfLatencias = pd.DataFrame(filas, columns=['NOMBRE','IP', 'REGION', 'PAIS','MARCA','CLIENTE','FECHA','ERROR','OTRA'])
             """Excel"""
             writer = pd.ExcelWriter(f"no_actualizados.xlsx")
             dfLatencias.to_excel(writer, sheet_name="devices", index=False)
