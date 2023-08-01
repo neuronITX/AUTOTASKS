@@ -164,8 +164,9 @@ def updateBackups(dicDatosMongoDB):
                     pass
         else:
             marcaDev=str(documento.get("MARCA"))
-            modMarca = marcaDev.replace('"', "")
-            modMarca = modMarca.replace(",", "")
+            print(marcaDev)
+            modMarca = marcaDev.replace(",", "")
+            print(modMarca)
             datos = [
             [documento.get("NOMBRE"),documento.get("IP"),documento.get("REGION"),
              documento.get("PAIS"),modMarca,documento.get("CLIENTE"),
