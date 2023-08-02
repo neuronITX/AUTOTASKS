@@ -22,7 +22,7 @@ file_handler.setLevel(logging.DEBUG)
 logger.addHandler(file_handler)
 
 def timerOnLatencias():
-    logger.info(f"-----Inicio de latencias-----")
+    logger.info(f"-----Inicio de latencias {date_ac}-----")
     date_ac = now.strftime("%d-%m-%Y")
     with open('/home/AUTOTASKS/datosLatencias.txt', 'w') as archivo_txt:
         archivo_txt.write('')
@@ -82,8 +82,6 @@ def timerOnLatencias():
                                 pscEstadisticas=pscEstadisticas.replace("=", "")
                                 tokenEstadisticas = word_tokenize(pscEstadisticas)
                                 latMed=tokenEstadisticas[6]
-
-                                logger.info(f'''{dfUrls.iloc[0,2]}- Conexión: OK - Latencia: {latMed}''')
                                 instInsertar=latencia.consultas_latencia({"NOMBRE":dfUrls.iloc[0,1],"URL":dfUrls.iloc[0,2],"PING":True,
                                         "PPERDIDOS":pakPerdidos,"LATENCIA(M)":latMed,"FRACCION":hora})
                                 instInsertar.insertarDatosLatenc()     
@@ -92,6 +90,7 @@ def timerOnLatencias():
                     except Exception as error:
                         logger.info(f"-----ERROR LATENCIAS {error}-----") 
     mensaje=instLat.insertarHistLat()  
-    logger.info(f"-----{mensaje}-----")               
+    logger.info(f"-----{mensaje}-----")  
+    logger.info(f"-----Fin de latencias {date_ac}-----")             
 
 timerOnLatencias()
