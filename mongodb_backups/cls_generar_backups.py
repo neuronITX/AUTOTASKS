@@ -2,6 +2,7 @@ from paramiko.ssh_exception import SSHException, AuthenticationException, NoVali
 from netmiko import ConnectHandler, NetMikoAuthenticationException, NetMikoTimeoutException, ReadTimeout
 import pandas as pd
 from datetime import datetime
+import sys
 
 #Clase genera los backups
 class cls_generar_backups:
@@ -455,9 +456,16 @@ class cls_generar_backups:
             msjOutput=f"{nombre} - {ip} - {marca} - Conexión: SSH (OK)  - Backup: Ok"
         
         net_connect.disconnect()
-        bytOutput=output.encode('utf-8')
-        strOutput=bytOutput.decode('utf-8')
-        return strOutput,msjOutput
+        try:
+            return output,msjOutput
+        except:
+            try:
+                bytOutput=output.encode('utf-8')
+                strOutput=bytOutput.decode('utf-8')
+                return strOutput,msjOutput
+            except:
+                strOutput=sys.stdout.buffer.write(output.encode(sys.stdout.encoding, errors='replace'))   
+                return strOutput,msjOutput
 
     def BackupTelecom(self):
         device=self.dicDatosBackup.get("DEVICE")

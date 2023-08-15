@@ -271,6 +271,7 @@ def updataMongodb():
                 coll_e.update_one({"IP": str(documento.get("IP"))},{"$set":{"PAIS": str(dfSolar.iloc[index,6])}})
                 coll_e.update_one({"IP": str(documento.get("IP"))},{"$set":{"MARCA": str(dfSolar.iloc[index,3])}})
                 coll_e.update_one({"IP": str(documento.get("IP"))},{"$set":{"CLIENTE": str(dfSolar.iloc[index,8])}})
+                coll_e.update_one({"IP": str(documento.get("IP"))},{"$set":{"RED": str(dfSolar.iloc[index,0])}})
             else:
                 coll_e.update_one({"IP": str(documento.get("IP"))},{"$set":{"ESTADO": False}})
                 coll_e.delete_one({"IP":str(documento.get("IP"))})
@@ -402,7 +403,6 @@ def devicesSolarAdd():
                     "DEVICE":type_device,
                     "PORT":None}
             addDevicesSolar(dicDatosMongoDB)   
-    #devicesUpdateSolar
     updataMongodb()
 
 def backupsUpdate():

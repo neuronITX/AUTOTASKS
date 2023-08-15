@@ -38,5 +38,6 @@ class consultas_error_equipos:
                     "PAIS":self.dic_info.get("PAIS"),
                     "MARCA":self.dic_info.get("MARCA"),
                     "CLIENTE":self.dic_info.get("CLIENTE"),
+                    "RED":self.dic_info.get("RED"),
                     "ERROR":self.dic_info.get("INSERT_ERROR"),
                     "FECHA":self.dic_info.get("FECHA")})
