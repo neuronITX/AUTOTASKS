@@ -2,3 +2,5 @@
 __pycache__/
 datosLatencias.txt
 sinActualizar.txt
+/logs
+no_actualizados.xlsx
