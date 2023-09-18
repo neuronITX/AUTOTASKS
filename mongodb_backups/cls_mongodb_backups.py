@@ -42,6 +42,7 @@ class consultas_backups_equipos:
                 else:
                     mss=None  
         else:
+            doc==None
             mss=f"No existe el dispositivo: {self.nombre}"
 
         return mss,doc
