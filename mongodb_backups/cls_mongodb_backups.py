@@ -34,13 +34,16 @@ class consultas_backups_equipos:
         db = self.instancia_cnn_backups()
         marca=self.colecciones_marcas()    
         coll = db[marca]
-        doc_pym= coll.find({"IP":self.dic_info.get("IP")}).limit(1)  
-        for doc in doc_pym:
-            if doc==None:
-                mss=f"No existe el dispositivo: {self.nombre}"
-            else:
-                mss=None              
-   
+        doc_pym= coll.find({"IP":self.dic_info.get("IP")}).limit(1) 
+        if doc_pym.count() > 0:
+            for doc in doc_pym:
+                if doc==None:
+                    mss=f"No existe el dispositivo: {self.nombre}"
+                else:
+                    mss=None  
+        else:
+            mss=f"No existe el dispositivo: {self.nombre}"
+
         return mss,doc
 
     def generar_backup(self):
